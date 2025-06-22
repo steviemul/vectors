@@ -11,6 +11,7 @@ public record DocumentRequest(
     String reason,
     String category,
     String severity,
+    String language,
     UUID id) {
 
 }

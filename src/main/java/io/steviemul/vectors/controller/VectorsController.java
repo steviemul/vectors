@@ -19,6 +19,7 @@ import java.util.Map;
 public class VectorsController {
 
   public static final String DOCUMENTS_URI = "/documents";
+  public static final String EMBEDDING_URI = "/embedding";
 
   private final VectorsService vectorsService;
 
@@ -26,7 +27,7 @@ public class VectorsController {
     this.vectorsService = vectorsService;
   }
 
-  @GetMapping
+  @GetMapping(EMBEDDING_URI)
   public Map<String, EmbeddingResponse> getEmbedding(
       @RequestParam(defaultValue = "Something to embed") String contents) {
     return vectorsService.createEmbedding(contents);

@@ -10,6 +10,7 @@ spring:
       chat:
         options:
           model: gpt-4
+      api-key: ${OPEN_API_KEY:}
 
   datasource:
     url: jdbc:postgresql://localhost:5432/vectordb
@@ -24,3 +25,9 @@ spring:
     sql-migration-prefix: T
     table: flyway_schema_vector_store
     validate-on-migrate: false
+
+
+logging:
+  level:
+    org:
+      springframework: INFO

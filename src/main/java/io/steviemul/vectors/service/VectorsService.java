@@ -69,7 +69,6 @@ public class VectorsService {
     SearchRequest searchRequest = SearchRequest.builder()
         .query(embeddingContents)
         .similarityThreshold(0.1)
-        .filterExpression(createFilterExpression(documentRequest))
         .topK(5)
         .build();
 

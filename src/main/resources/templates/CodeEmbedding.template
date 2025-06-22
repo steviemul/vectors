@@ -1,6 +1,7 @@
 Vulnerability Type: {type}
 File: {filename}
 Line Number: {lineNumber}
+Language: {language}
 
 Description:
 {description}

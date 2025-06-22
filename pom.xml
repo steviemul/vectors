@@ -31,6 +31,7 @@
 		<java.version>21</java.version>
 		<spring-ai.version>1.0.0</spring-ai.version>
 		<flyway.version>10.17.0</flyway.version>
+		<sarif.version>2.0</sarif.version>
 	</properties>
 
 	<dependencies>
@@ -61,6 +62,18 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-database-postgresql</artifactId>
 			<version>${flyway.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-vector</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.contrastsecurity</groupId>
+			<artifactId>java-sarif</artifactId>
+			<version>${sarif.version}</version>
 		</dependency>
 
 		<dependency>
