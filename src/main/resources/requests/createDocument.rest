@@ -1,0 +1,12 @@
+POST http://localhost:8080/documents
+Content-Type: application/json
+
+{
+  "code": "String result = dbConnection.execute(userName, password);",
+  "type": "SQL Injection",
+  "filename": "src/main/test/SqlInject.java",
+  "lineNumber": 100,
+  "category": "Injection",
+  "severity": "HIGH",
+  "id": "a9a0b5a8-751e-4feb-b43f-1327ff65461f"
+}

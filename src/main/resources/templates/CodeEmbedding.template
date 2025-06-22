@@ -1,0 +1,14 @@
+Vulnerability Type: {type}
+File: {filename}
+Line Number: {lineNumber}
+
+Description:
+{description}
+
+Code Snippet:
+{code}
+
+Reason:
+{reason}
+
+Tags: {category}, {severity}

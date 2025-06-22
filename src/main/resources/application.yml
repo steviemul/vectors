@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: vectors
+
+  ai:
+    openai:
+      embedding:
+        options:
+          model: text-embedding-3-small
+      chat:
+        options:
+          model: gpt-4
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vectordb
+    driver-class-name: org.postgresql.Driver
+    username: testuser
+    password: testpwd
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    out-of-order: true
+    sql-migration-prefix: T
+    table: flyway_schema_vector_store
+    validate-on-migrate: false
