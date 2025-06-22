@@ -8,6 +8,7 @@ import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.filter.Filter;
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class VectorsService {
+public class CodeVectorsService {
 
   public static final String EMBEDDING = "embedding";
   public static final String TYPE = "type";
@@ -28,9 +29,9 @@ public class VectorsService {
   private final VectorStore vectorStore;
   private final TemplateService templateService;
 
-  public VectorsService(
+  public CodeVectorsService(
       EmbeddingModel embeddingModel,
-      VectorStore vectorStore,
+      @Qualifier("codeVectorStore") VectorStore vectorStore,
       TemplateService templateService) {
     this.embeddingModel = embeddingModel;
     this.vectorStore = vectorStore;

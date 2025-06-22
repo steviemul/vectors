@@ -1,7 +1,7 @@
 package io.steviemul.vectors.controller;
 
 import io.steviemul.vectors.entity.DocumentRequest;
-import io.steviemul.vectors.service.VectorsService;
+import io.steviemul.vectors.service.CodeVectorsService;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +21,9 @@ public class VectorsController {
   public static final String DOCUMENTS_URI = "/documents";
   public static final String EMBEDDING_URI = "/embedding";
 
-  private final VectorsService vectorsService;
+  private final CodeVectorsService vectorsService;
 
-  public VectorsController(VectorsService vectorsService) {
+  public VectorsController(CodeVectorsService vectorsService) {
     this.vectorsService = vectorsService;
   }
 

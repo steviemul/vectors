@@ -10,6 +10,12 @@ docker-compose up
 
 # Start the app
 
+Set your open api key
+
+```shell
+export OPEN_API_KEY=...
+```
+
 Run the spring boot app
 
 ```shell
