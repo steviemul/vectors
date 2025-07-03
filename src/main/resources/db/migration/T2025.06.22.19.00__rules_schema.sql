@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS vector_store_rules (
     id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
     content text,
-    metadata json,
+    sarifMetadata json,
     embedding vector(1536)
 );
 

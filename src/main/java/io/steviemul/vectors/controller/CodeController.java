@@ -1,8 +1,9 @@
 package io.steviemul.vectors.controller;
 
 import io.steviemul.vectors.entity.DocumentRequest;
+import io.steviemul.vectors.entity.DocumentResponse;
 import io.steviemul.vectors.service.CodeVectorsService;
-import org.springframework.ai.document.Document;
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,16 +17,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class VectorsController {
+@RequiredArgsConstructor
+public class CodeController {
 
   public static final String DOCUMENTS_URI = "/documents";
   public static final String EMBEDDING_URI = "/embedding";
 
   private final CodeVectorsService vectorsService;
-
-  public VectorsController(CodeVectorsService vectorsService) {
-    this.vectorsService = vectorsService;
-  }
 
   @GetMapping(EMBEDDING_URI)
   public Map<String, EmbeddingResponse> getEmbedding(
@@ -50,7 +48,7 @@ public class VectorsController {
   }
 
   @GetMapping(DOCUMENTS_URI)
-  public List<Document> getDocuments(DocumentRequest documentRequest) {
+  public List<DocumentResponse> getDocuments(DocumentRequest documentRequest) {
     return vectorsService.search(documentRequest);
   }
 }

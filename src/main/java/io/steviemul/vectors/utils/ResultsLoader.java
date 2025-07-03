@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class ResultsLoader {
 
-  private static final String DOCUMENTS_URL = "http://localhost:8080/documents";
+  private static final String DOCUMENTS_URL = "http://localhost:14080/documents";
   private static final ObjectMapper objectMapper = new ObjectMapper();
   private static final String RESULTS_PATH = "/results/results.sarif";
   private static final HttpClient httpClient = HttpClient.newHttpClient();
@@ -27,12 +27,14 @@ public class ResultsLoader {
 
     List<Result> results = getResults(sarifSchema210);
 
+    int index = 0;
+
     for (Result result : results) {
-      postResult(result);
+      postResult(result, index++);
     }
   }
 
-  private static void postResult(Result result) throws Exception {
+  private static void postResult(Result result, int index) throws Exception {
 
     DocumentRequest documentRequest = resultToDocumentRequest(result);
 
@@ -47,7 +49,7 @@ public class ResultsLoader {
     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
     if (response.statusCode() == 202) {
-      System.out.println("Result saved successfully");
+      System.out.println(String.format("Result %s saved successfully", index));
     }
     else {
       System.err.println("Error saving result : " + response.statusCode());

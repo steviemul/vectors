@@ -1,3 +1,6 @@
+server:
+  port: 14080
+
 spring:
   application:
     name: vectors
@@ -7,16 +10,13 @@ spring:
       embedding:
         options:
           model: text-embedding-3-small
-      chat:
-        options:
-          model: gpt-4
-      api-key: ${OPEN_API_KEY:unknown}
+      api-key: ${OPEN_API_KEY:ignored}
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/vectordb
+    url: jdbc:postgresql://localhost:5432/vector_db
     driver-class-name: org.postgresql.Driver
-    username: testuser
-    password: testpwd
+    username: postgres
+    password: password
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 

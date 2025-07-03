@@ -1,6 +1,7 @@
 package io.steviemul.vectors.service;
 
 import io.steviemul.vectors.entity.DocumentRequest;
+import io.steviemul.vectors.entity.DocumentResponse;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.embedding.EmbeddingResponse;
@@ -44,11 +45,7 @@ public class CodeVectorsService {
 
     Document document = new Document(
         embeddingContents,
-        Map.of(
-            TYPE, documentRequest.type(),
-            CATEGORY, documentRequest.category(),
-            SEVERITY, documentRequest.severity(),
-            ID, documentRequest.id()));
+        templateService.objectToMap(documentRequest));
 
     vectorStore.add(List.of(document));
   }
@@ -63,7 +60,7 @@ public class CodeVectorsService {
     vectorStore.delete(expression);
   }
 
-  public List<Document> search(DocumentRequest documentRequest) {
+  public List<DocumentResponse> search(DocumentRequest documentRequest) {
 
     String embeddingContents = templateService.renderCodeEmbedding(documentRequest);
 
@@ -73,7 +70,13 @@ public class CodeVectorsService {
         .topK(5)
         .build();
 
-    return vectorStore.similaritySearch(searchRequest);
+    return vectorStore.similaritySearch(searchRequest)
+        .stream().map(this::documentToResponse)
+        .toList();
+  }
+
+  public DocumentResponse documentToResponse(Document document) {
+    return new DocumentResponse(document.getScore(), document.getMetadata());
   }
 
   public Map<String, EmbeddingResponse> createEmbedding(String contents) {

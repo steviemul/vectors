@@ -1,12 +1,15 @@
 services:
   db:
-    hostname: db
-    image: ankane/pgvector
-    ports:
-      - 5432:5432
-    restart: always
+    image: pgvector/pgvector:pg17
+    container_name: pgvector-db
     environment:
-      - POSTGRES_DB=vectordb
-      - POSTGRES_USER=testuser
-      - POSTGRES_PASSWORD=testpwd
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vector_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data: {}
