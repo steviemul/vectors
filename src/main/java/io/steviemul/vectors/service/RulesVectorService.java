@@ -14,11 +14,8 @@ import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.filter.Filter;
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder.Op;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-@Service
 public class RulesVectorService {
 
   private final VectorStore rulesVectorStore;
@@ -27,7 +24,7 @@ public class RulesVectorService {
   private static final String VENDOR = "vendor";
 
   public RulesVectorService(
-      @Qualifier("rulesVectorStore") VectorStore vectorStore,
+      VectorStore vectorStore,
       TemplateService templateService) {
     this.rulesVectorStore = vectorStore;
     this.templateService = templateService;

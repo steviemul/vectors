@@ -3,6 +3,7 @@ package io.steviemul.vectors.configuration;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,22 +14,24 @@ import static org.springframework.ai.vectorstore.pgvector.PgVectorStore.PgIndexT
 @Configuration
 public class VectorStoresConfiguration {
 
-  @Bean("codeVectorStore")
-  public VectorStore codeVectorStore(JdbcTemplate jdbcTemplate, EmbeddingModel embeddingModel) {
+  @Bean("openAiRulesVectorStore")
+  public VectorStore openAiRulesVectorStore(
+      JdbcTemplate jdbcTemplate,
+      @Qualifier("openAiTextEmbeddingModel") EmbeddingModel embeddingModel) {
+
     return PgVectorStore.builder(jdbcTemplate, embeddingModel)
-        .dimensions(1536)                    // Optional: defaults to model dimensions or 1536
-        .distanceType(COSINE_DISTANCE)       // Optional: defaults to COSINE_DISTANCE
-        .indexType(HNSW)                     // Optional: defaults to HNSW
-        .schemaName("public")                // Optional: defaults to "public"
-        .vectorTableName("vector_store")     // Optional: defaults to "vector_store"
-        .maxDocumentBatchSize(10000)         // Optional: defaults to 10000
+        .vectorTableName("vector_store_openai_rules")
         .build();
   }
 
-  @Bean("rulesVectorStore")
-  public VectorStore rulesVectorStore(JdbcTemplate jdbcTemplate, EmbeddingModel embeddingModel) {
+  @Bean("ollamaRulesVectorStore")
+  public VectorStore ollamaRulesVectorStore(
+      JdbcTemplate jdbcTemplate,
+      @Qualifier("ollamaTextEmbeddingModel") EmbeddingModel embeddingModel) {
+
     return PgVectorStore.builder(jdbcTemplate, embeddingModel)
-        .vectorTableName("vector_store_rules")
+        .vectorTableName("vector_store_ollama_rules")
         .build();
   }
+
 }

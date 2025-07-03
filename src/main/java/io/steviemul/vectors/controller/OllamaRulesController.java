@@ -5,8 +5,7 @@ import io.steviemul.vectors.entity.QueryAdjustments;
 import io.steviemul.vectors.entity.RuleRequest;
 import io.steviemul.vectors.service.RulesVectorService;
 import java.util.List;
-import java.util.UUID;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
-public class RulesController {
+public class OllamaRulesController {
 
-  public static final String RULES_URI = "/rules";
+  public static final String RULES_URI = "/ollama/rules";
 
   private final RulesVectorService rulesVectorService;
+
+  public OllamaRulesController(@Qualifier("ollamaRulesVectorService") RulesVectorService rulesVectorService) {
+    this.rulesVectorService = rulesVectorService;
+  }
 
   @PostMapping(value = RULES_URI, consumes = "application/json", produces = "application/json")
   public ResponseEntity<Void> saveDocument(@RequestBody RuleRequest ruleRequest) {

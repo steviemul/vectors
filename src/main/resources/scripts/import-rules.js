@@ -27,7 +27,7 @@ for (const rule of rules) {
         vendor
     };
 
-    const ruleVectorResponse = await fetch(`http://localhost:14080/rules`, {
+    const ruleVectorResponse = await fetch(`http://localhost:14080/ollama/rules`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
