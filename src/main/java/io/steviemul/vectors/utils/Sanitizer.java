@@ -1,6 +1,8 @@
 package io.steviemul.vectors.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Sanitizer {
 
@@ -9,12 +11,12 @@ public class Sanitizer {
 
   public static String sanitize(String... strings) {
 
-    String[] output = new String[strings.length];
+    List<String> output = new ArrayList<>();
 
     for (int i = 0; i < strings.length; i++) {
       if (strings[i] == null) continue;
 
-      output[i] = sanitize(strings[i]);
+      output.add(sanitize(strings[i]));
     }
 
     return String.join(".\n", output);

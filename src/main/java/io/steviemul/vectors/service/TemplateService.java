@@ -15,6 +15,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import org.springframework.util.StringUtils;
 
 @Service
 public class TemplateService {
@@ -48,11 +49,29 @@ public class TemplateService {
 
   public String renderRuleEmbedding(RuleRequest ruleRequest) {
 
+    Map<String, Object> data = ruleRequestToTemplateMap(ruleRequest);
+
+    return renderMapAsString(data);
+  }
+
+  private String renderMapAsString(Map<String, Object> data) {
+
+    StringBuilder builder = new StringBuilder();
+
+    for (Map.Entry<String, Object> entry : data.entrySet()) {
+      if (entry.getValue() != null && StringUtils.hasText(entry.getValue().toString())) {
+        builder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+      }
+    }
+
+    return builder.toString();
+  }
+
+  private String renderMapWithTemplate(Map<String, Object> data) {
+
     PromptTemplate template = PromptTemplate.builder()
         .resource(new ClassPathResource(RULE_TEMPLATE_RESOURCE))
         .build();
-
-    Map<String, Object> data = ruleRequestToTemplateMap(ruleRequest);
 
     return template.render(data);
   }
@@ -81,15 +100,13 @@ public class TemplateService {
   }
 
   public Map<String, Object> objectToMap(Object object) {
-    Map<String, Object> map = objectMapper
-        .convertValue(object, new TypeReference<>() {});
 
-    for (Map.Entry<String, Object> entry : map.entrySet()) {
-      if (entry.getValue() == null) {
-        entry.setValue(UNKNOWN);
-      }
-    }
+    Map<String, Object> data = objectMapper.convertValue(
+        object,
+        new TypeReference<>() {});
 
-    return map;
+    data.entrySet().removeIf(e -> e.getValue() == null);
+
+    return data;
   }
 }

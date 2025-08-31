@@ -6,3 +6,4 @@ CREATE TABLE IF NOT EXISTS vector_store_ollama_rules (
 );
 
 CREATE INDEX ON vector_store_ollama_rules USING HNSW (embedding vector_cosine_ops);
+CREATE INDEX IF NOT EXISTS idx_ollama_vendor ON vector_store_ollama_rules ((metadata->>'vendor'));

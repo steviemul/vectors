@@ -1,3 +1,5 @@
+# Ignore node_modules directories everywhere
+node_modules/
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

@@ -5,6 +5,7 @@ import static org.springframework.ai.model.ModelOptionsUtils.objectToMap;
 import io.steviemul.vectors.entity.DocumentResponse;
 import io.steviemul.vectors.entity.QueryAdjustments;
 import io.steviemul.vectors.entity.RuleRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,13 +33,26 @@ public class RulesVectorService {
 
   public void save(RuleRequest ruleRequest) {
 
-    String embeddingContents = templateService.renderRuleEmbedding(ruleRequest);
-
-    Document document = new Document(
-        embeddingContents,
-        templateService.objectToMap(ruleRequest));
+    Document document = ruleRequestToDocument(ruleRequest);
 
     rulesVectorStore.add(List.of(document));
+  }
+
+  public void save(List<RuleRequest> ruleRequests) {
+
+    List<Document> documents = ruleRequests.stream()
+        .map(this::ruleRequestToDocument).toList();
+
+    rulesVectorStore.add(documents);
+  }
+
+  public Document ruleRequestToDocument(RuleRequest ruleRequest) {
+
+    String embeddingContents = templateService.renderRuleEmbedding(ruleRequest);
+
+    return new Document(
+        embeddingContents,
+        templateService.objectToMap(ruleRequest));
   }
 
   public List<DocumentResponse> search(String vendor, QueryAdjustments adjustments, RuleRequest ruleRequest) {
