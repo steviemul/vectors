@@ -5,7 +5,6 @@ import io.steviemul.vectors.entity.QueryAdjustments;
 import io.steviemul.vectors.entity.RuleRequest;
 import io.steviemul.vectors.service.RulesVectorService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +32,11 @@ public class OpenAIRulesController {
     return ResponseEntity.accepted().build();
   }
 
+  @GetMapping( RULES_URI + "/embedding")
+  public float[] getEmbeddings(RuleRequest ruleRequest) {
+    return rulesVectorService.getEmbedding(ruleRequest);
+  }
+
   @GetMapping(RULES_URI)
   public List<DocumentResponse> getRules(QueryAdjustments adjustments, RuleRequest ruleRequest) {
     return rulesVectorService.search(null, adjustments, ruleRequest);
@@ -44,4 +48,5 @@ public class OpenAIRulesController {
       QueryAdjustments adjustments, RuleRequest ruleRequest) {
     return rulesVectorService.search(vendor, adjustments, ruleRequest);
   }
+
 }

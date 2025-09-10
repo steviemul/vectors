@@ -10,7 +10,7 @@ public class OllamaRulesService {
 
   private final OllamaRuleRepository ollamaRuleRepository;
 
-  public int getRulesCountByVendor(String vendor) {
-    return ollamaRuleRepository.countAllByVendor(vendor);
+  public boolean ruleExists(String ruleId) {
+    return (ollamaRuleRepository.findByRuleId(ruleId) != null);
   }
 }

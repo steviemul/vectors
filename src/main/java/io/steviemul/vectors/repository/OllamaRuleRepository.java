@@ -13,6 +13,12 @@ public interface OllamaRuleRepository extends JpaRepository<OllamaRule, UUID> {
 	@Query(value = "SELECT * FROM vector_store_ollama_rules WHERE metadata->>'vendor' = :vendor", nativeQuery = true)
 	List<OllamaRule> findAllByVendor(@Param("vendor") String vendor);
 
-    @Query(value = "SELECT COUNT(*) FROM vector_store_ollama_rules WHERE metadata->>'vendor' = :vendor", nativeQuery = true)
+  @Query(value = "SELECT COUNT(*) FROM vector_store_ollama_rules WHERE metadata->>'vendor' = :vendor", nativeQuery = true)
 	int countAllByVendor(@Param("vendor") String vendor);
+
+  @Query(value = "SELECT * FROM vector_store_ollama_rules WHERE metadata->>'id' = ANY(:ruleIds)", nativeQuery = true)
+  List<OllamaRule> findAllByRuleIdIn(@Param("ruleIds") List<String> ruleIds);
+
+  @Query(value = "SELECT * FROM vector_store_ollama_rules WHERE metadata->>'id' = :ruleId", nativeQuery = true)
+  OllamaRule findByRuleId(@Param("ruleId") String ruleId);
 }

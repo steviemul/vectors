@@ -38,6 +38,11 @@ public class OllamaRulesController {
     return ResponseEntity.accepted().build();
   }
 
+  @GetMapping( "/ollama/embedding")
+  public float[] getEmbeddings(RuleRequest ruleRequest) {
+    return rulesVectorService.getEmbedding(ruleRequest);
+  }
+
   @GetMapping(RULES_URI)
   public List<DocumentResponse> getRules(QueryAdjustments adjustments, RuleRequest ruleRequest) {
     return rulesVectorService.search(null, adjustments, ruleRequest);
@@ -63,4 +68,5 @@ public class OllamaRulesController {
                 (d1, d2) -> d1,
                 LinkedHashMap::new));
   }
+
 }

@@ -4,6 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.steviemul.vectors.entity.RuleRequest;
 import io.steviemul.vectors.service.OllamaRulesService;
 import io.steviemul.vectors.service.RulesVectorService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -17,13 +24,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
@@ -51,35 +51,48 @@ public class RulesLoader implements ApplicationRunner {
 
   private void processZipFile(Path zipFile) {
 
-    String vendor = zipFile.getFileName().toString().substring(0, zipFile.getFileName().toString().indexOf("."));
+    log.info("Checking {} for new rules", zipFile.getFileName());
 
-    int ruleCount = ollamaRulesService.getRulesCountByVendor(vendor);
+    List<RuleRequest> ruleRequests = getRuleRequests(zipFile);
 
-    log.info("Found {} rules for vendor {}", ruleCount, vendor);
+    log.info("Found {} rules in {}", ruleRequests.size(), zipFile.getFileName());
 
-    if (ruleCount == 0) {
-      List<RuleRequest> ruleRequests = getRuleRequests(zipFile);
+    List<RuleRequest> newRuleRequests = getNewRuleRequests(ruleRequests);
 
-      List<Future> futures = batchSaveRuleRequests(ruleRequests);
+    if (!newRuleRequests.isEmpty()) {
+
+      log.info("Found {} new rules to save", newRuleRequests.size());
+
+      List<Future<?>> futures = batchSaveRuleRequests(newRuleRequests);
 
       waitForFutures(futures);
 
       log.info("Rules saved");
     }
+    else {
+      log.info("No new rules to save");
+    }
   }
 
-  private void waitForFutures(List<Future> futures) {
+  private List<RuleRequest> getNewRuleRequests(List<RuleRequest> ruleRequests) {
+
+    return ruleRequests.stream()
+        .filter(r -> !ollamaRulesService.ruleExists(r.id()))
+        .toList();
+  }
+
+  private void waitForFutures(List<Future<?>> futures) {
     try {
-      for (Future future : futures) {
+      for (Future<?> future : futures) {
         future.get();
       }
     }
-    catch (Exception e) {}
+    catch (Exception ignored) {}
   }
 
-  private List<Future> batchSaveRuleRequests(List<RuleRequest> ruleRequests) {
+  private List<Future<?>> batchSaveRuleRequests(List<RuleRequest> ruleRequests) {
 
-    List<Future> futures = new ArrayList<>();
+    List<Future<?>> futures = new ArrayList<>();
 
     final int batchSize = 100;
 
@@ -89,7 +102,7 @@ public class RulesLoader implements ApplicationRunner {
 
       try {
         int finalStart = start;
-        Future future = executor.submit(() -> {
+        Future<?> future = executor.submit(() -> {
           ollamaRulesVectorService.save(batch);
           log.info("Saved batch {}-{} of {}", finalStart + 1, end, ruleRequests.size());
         });
@@ -120,8 +133,6 @@ public class RulesLoader implements ApplicationRunner {
 
             RuleRequest ruleRequest = getRuleContents(contents);
             ruleRequests.add(ruleRequest);
-
-            log.info("Added rule request {} to rules vector", ruleRequest.id());
           }
         }
       }

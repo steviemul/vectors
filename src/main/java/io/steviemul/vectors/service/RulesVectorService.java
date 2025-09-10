@@ -5,7 +5,8 @@ import static org.springframework.ai.model.ModelOptionsUtils.objectToMap;
 import io.steviemul.vectors.entity.DocumentResponse;
 import io.steviemul.vectors.entity.QueryAdjustments;
 import io.steviemul.vectors.entity.RuleRequest;
-import java.util.ArrayList;
+import lombok.RequiredArgsConstructor;
+import org.springframework.ai.embedding.EmbeddingModel;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,19 +18,15 @@ import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
 import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder.Op;
 import org.springframework.util.StringUtils;
 
+@RequiredArgsConstructor
 public class RulesVectorService {
 
   private final VectorStore rulesVectorStore;
   private final TemplateService templateService;
+  private final EmbeddingModel embeddingModel;
+  private final RuleMappingService ruleMappingService;
 
   private static final String VENDOR = "vendor";
-
-  public RulesVectorService(
-      VectorStore vectorStore,
-      TemplateService templateService) {
-    this.rulesVectorStore = vectorStore;
-    this.templateService = templateService;
-  }
 
   public void save(RuleRequest ruleRequest) {
 
@@ -55,7 +52,35 @@ public class RulesVectorService {
         templateService.objectToMap(ruleRequest));
   }
 
+  public float[] getEmbedding(RuleRequest ruleRequest) {
+    String embeddingContents = templateService.renderRuleEmbedding(ruleRequest);
+
+    return embeddingModel.embed(embeddingContents);
+  }
+
   public List<DocumentResponse> search(String vendor, QueryAdjustments adjustments, RuleRequest ruleRequest) {
+
+    if (adjustments.cache() == true) {
+      return cachingSearch(vendor, adjustments, ruleRequest);
+    }
+
+    return similaritySearch(vendor, adjustments, ruleRequest);
+  }
+
+  public List<DocumentResponse> cachingSearch(String vendor, QueryAdjustments adjustments, RuleRequest ruleRequest) {
+
+    List<DocumentResponse> responses = ruleMappingService.getRuleMappings(ruleRequest.id());
+
+    if (responses.isEmpty()) {
+      responses = similaritySearch(vendor, adjustments, ruleRequest);
+
+      ruleMappingService.saveRuleMappings(ruleRequest.id(), responses);
+    }
+
+    return responses;
+  }
+
+  public List<DocumentResponse> similaritySearch(String vendor, QueryAdjustments adjustments, RuleRequest ruleRequest) {
 
     String embeddingContents = templateService.renderRuleEmbedding(ruleRequest);
 
