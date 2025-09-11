@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_ollama_rule_id ON vector_store_ollama_rules ((metadata->>'id'));
