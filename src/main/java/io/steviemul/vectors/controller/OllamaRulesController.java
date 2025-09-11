@@ -4,6 +4,7 @@ import io.steviemul.vectors.entity.DocumentResponse;
 import io.steviemul.vectors.entity.QueryAdjustments;
 import io.steviemul.vectors.entity.RuleRequest;
 import io.steviemul.vectors.service.RulesVectorService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -44,21 +45,21 @@ public class OllamaRulesController {
   }
 
   @GetMapping(RULES_URI)
-  public List<DocumentResponse> getRules(QueryAdjustments adjustments, RuleRequest ruleRequest) {
+  public List<DocumentResponse> getRules(QueryAdjustments adjustments, @Valid RuleRequest ruleRequest) {
     return rulesVectorService.search(null, adjustments, ruleRequest);
   }
 
   @GetMapping(RULES_URI + "/{vendor}")
   public List<DocumentResponse> getRulesForVendor(
       @PathVariable("vendor") final String vendor,
-      QueryAdjustments adjustments, RuleRequest ruleRequest) {
+      QueryAdjustments adjustments, @Valid RuleRequest ruleRequest) {
     return rulesVectorService.search(vendor, adjustments, ruleRequest);
   }
 
   @GetMapping(RULE_IDS_URL + "/{vendor}")
   public Map<Object, Double> getSimilarRulesForVendor(
       @PathVariable("vendor") final String vendor,
-      QueryAdjustments adjustments, RuleRequest ruleRequest) {
+      QueryAdjustments adjustments, @Valid RuleRequest ruleRequest) {
 
     return rulesVectorService.search(vendor, adjustments, ruleRequest)
         .stream().collect(

@@ -1,9 +1,10 @@
 package io.steviemul.vectors.entity;
 
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 public record RuleRequest(
-    String id,
+    @NotBlank String id,
     String name,
     String severity,
     String category,
